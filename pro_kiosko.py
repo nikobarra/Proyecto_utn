@@ -1,4 +1,5 @@
 from tkinter import W, Button, Entry, IntVar, Label, Radiobutton, StringVar, Tk, ttk
+from tkinter.messagebox import askquestion
 
 root = Tk()
 root.title("Maxikiosco")
@@ -15,9 +16,12 @@ var_stock = IntVar()
 
 
 def click_btn_4():
-    root.quit()
+    response = askquestion(title="salir", message="Esta seguro que desea salir?")
+    if response == "yes":
+        root.quit()
 
 
+# funcion que elimina el label generado para mostrar que se guardo correctamente el prod!
 def hide_lbl(label):
     label.destroy()
 
@@ -37,6 +41,7 @@ def click_btn_1():
             var_venta.get(),
             var_provee.get(),
             var_stock.get(),
+            radio_sel.get(),
         ),
     )
     txt_lbl = Label(root, text=f"{entry_1.get()} se guardo correctamente")
@@ -92,6 +97,7 @@ entry_5.grid(row=4, column=1)
 entry_6 = Entry(root, textvariable=var_stock, width=100)
 entry_6.grid(row=5, column=1)
 
+# genero los botones que tendran funcionalidad
 btn_1 = Button(root, text="Agregar", command=click_btn_1)
 btn_1.grid(row=3, column=3)
 btn_2 = Button(root, text="Modificar", command=click_btn_1)
@@ -105,7 +111,7 @@ btn_exit.grid(row=7, column=1)
 
 
 tree = ttk.Treeview(root)
-tree["columns"] = ("col1", "col2", "col3", "col4", "col5", "col6")
+tree["columns"] = ("col1", "col2", "col3", "col4", "col5", "col6", "col7")
 tree.column("#0", width=50, minwidth=50, anchor=W)
 tree.column("col1", width=80, minwidth=80, anchor=W)
 tree.column("col2", width=80, minwidth=80, anchor=W)
@@ -113,5 +119,6 @@ tree.column("col3", width=80, minwidth=80, anchor=W)
 tree.column("col4", width=80, minwidth=80, anchor=W)
 tree.column("col5", width=80, minwidth=80, anchor=W)
 tree.column("col6", width=80, minwidth=80, anchor=W)
+tree.column("col7", width=80, minwidth=80, anchor=W)
 tree.grid(column=0, row=6, columnspan=4)
 root.mainloop()
