@@ -1,8 +1,20 @@
-from tkinter import W, Button, Entry, IntVar, Label, Radiobutton, StringVar, Tk, ttk
+from tkinter import (
+    W,
+    Button,
+    Entry,
+    IntVar,
+    Label,
+    LabelFrame,
+    Radiobutton,
+    StringVar,
+    Tk,
+    ttk,
+)
 from tkinter.messagebox import askquestion
 
 root = Tk()
 root.title("Maxikiosco")
+root.resizable(0, 0)
 
 # variable para guardar id provisorio sera eliminado cuando ingresemos los datos a una bd
 id_prod = 0
@@ -13,6 +25,16 @@ var_costo = IntVar()
 var_venta = IntVar()
 var_provee = StringVar()
 var_stock = IntVar()
+
+
+# funcion para limpiar los campos
+def clean_all():
+    entry_1.delete(0, "end")
+    entry_2.delete(0, "end")
+    entry_3.delete(0, "end")
+    entry_4.delete(0, "end")
+    entry_5.delete(0, "end")
+    entry_6.delete(0, "end")
 
 
 def click_btn_4():
@@ -47,12 +69,7 @@ def click_btn_1():
     txt_lbl = Label(root, text=f"{entry_1.get()} se guardo correctamente")
     txt_lbl.grid(row=0, column=1)
     root.after(3000, lambda: hide_lbl(txt_lbl))
-    entry_1.delete(0, "end")
-    entry_2.delete(0, "end")
-    entry_3.delete(0, "end")
-    entry_4.delete(0, "end")
-    entry_5.delete(0, "end")
-    entry_6.delete(0, "end")
+    clean_all()
 
 
 # btn_3 elimina el prod seleccionado en el treeview
@@ -67,9 +84,9 @@ def click_btn_3():
 radio_sel = IntVar()
 radio_sel.set(value=True)
 iva_yes = Radiobutton(root, text="Si", value=True, variable=radio_sel)
-iva_yes.grid(row=2, column=3)
+iva_yes.grid(row=3, column=2)
 iva_no = Radiobutton(root, text="No", value=False, variable=radio_sel)
-iva_no.grid(row=2, column=4)
+iva_no.grid(row=4, column=2)
 
 # defino las etiquetas a usar
 
@@ -84,28 +101,33 @@ label_7.grid(row=2, column=2, sticky="w")
 
 # Defino los campos donde se ingresara el texto
 
-entry_1 = Entry(root, textvariable=var_prod, width=100)
+entry_1 = Entry(root, textvariable=var_prod, width=110)
 entry_1.grid(row=0, column=1)
-entry_2 = Entry(root, textvariable=var_desc, width=100)
+entry_2 = Entry(root, textvariable=var_desc, width=110)
 entry_2.grid(row=1, column=1)
-entry_3 = Entry(root, textvariable=var_costo, width=100)
+entry_3 = Entry(root, textvariable=var_costo, width=110)
 entry_3.grid(row=2, column=1)
-entry_4 = Entry(root, textvariable=var_venta, width=100)
+entry_4 = Entry(root, textvariable=var_venta, width=110)
 entry_4.grid(row=3, column=1)
-entry_5 = Entry(root, textvariable=var_provee, width=100)
+entry_5 = Entry(root, textvariable=var_provee, width=110)
 entry_5.grid(row=4, column=1)
-entry_6 = Entry(root, textvariable=var_stock, width=100)
+entry_6 = Entry(root, textvariable=var_stock, width=110)
 entry_6.grid(row=5, column=1)
 
+# labelframe pra agrupar los botones
+btn_group = LabelFrame(root, text="Acciones", padx=10, pady=10)
+btn_group.grid(row=6, column=2)
+
 # genero los botones que tendran funcionalidad
-btn_1 = Button(root, text="Agregar", command=click_btn_1)
-btn_1.grid(row=3, column=3)
-btn_2 = Button(root, text="Modificar", command=click_btn_1)
-btn_2.grid(row=4, column=3)
-btn_3 = Button(root, text="Eliminar", command=click_btn_3)
-btn_3.grid(row=5, column=3)
-btn_exit = Button(root, text="Salir", command=click_btn_4, width=20)
-btn_exit.grid(row=7, column=1)
+btn_1 = Button(btn_group, text="Agregar", command=click_btn_1, cursor="hand2")
+btn_1.grid(row=3, column=3, padx=5, pady=5)
+btn_2 = Button(btn_group, text="Modificar", command=click_btn_1, cursor="hand2")
+btn_2.grid(row=4, column=3, padx=5, pady=5)
+btn_3 = Button(btn_group, text="Eliminar", command=click_btn_3, cursor="hand2")
+btn_3.grid(row=5, column=3, padx=5, pady=5)
+
+btn_exit = Button(root, text="Salir", command=click_btn_4, width=20, cursor="hand2")
+btn_exit.grid(row=7, column=1, padx=10, pady=10)
 
 # treeview muestra todos los prod ingresados, cuando haya bd se cargaran los datos que ya esten en la bd
 
@@ -119,6 +141,8 @@ tree.column("col3", width=80, minwidth=80, anchor=W)
 tree.column("col4", width=80, minwidth=80, anchor=W)
 tree.column("col5", width=80, minwidth=80, anchor=W)
 tree.column("col6", width=80, minwidth=80, anchor=W)
-tree.column("col7", width=80, minwidth=80, anchor=W)
-tree.grid(column=0, row=6, columnspan=4)
+tree.column("col7", width=10, minwidth=80, anchor=W)
+tree.grid(column=0, row=6, columnspan=6)
+# limpio todos los campos
+clean_all()
 root.mainloop()
