@@ -1,6 +1,8 @@
+import sqlite3
 from tkinter import (
     W,
     Button,
+    DoubleVar,
     Entry,
     IntVar,
     Label,
@@ -10,19 +12,63 @@ from tkinter import (
     Tk,
     ttk,
 )
+from tkinter import messagebox
 from tkinter.messagebox import askquestion
+
+
+# creo la base de datos y la conexion
+def create_base():
+    conn = sqlite3.connect("kiosko.db")
+    return conn
+
+
+# creo las tablas en caso de no existir con sus campos correspondientes
+def create_tabla(conn):
+    cursor = conn.cursor()
+    sql = "CREATE TABLE IF NOT EXISTS productos(id integer PRIMARY KEY AUTOINCREMENT, product text, description text, cost float, price float, provider text, stock integer)"
+    cursor.execute(sql)
+    conn.commit()
+
+
+conn = create_base()
+create_tabla(conn)
+
+
+# Alta de productos
+def save_data():
+    cursor = conn.cursor()
+    product = var_prod.get()
+    description = var_desc.get()
+    cost = var_costo.get()
+    price = var_venta.get()
+    provider = var_provee.get()
+    stock = var_stock.get()
+    data = (product, description, cost, price, provider, stock)
+    sql = "INSERT INTO productos(product, description, cost, price, provider, stock) VALUES(?, ?, ?, ?, ?, ?)"
+    cursor.execute(sql, data)
+    conn.commit()
+
+#valida las entradas para evitar guardar campos vacios
+def validate_entry():
+    if (len(var_prod.get()) != 0 and (len(var_desc.get())) !=0 and (len(str(var_costo.get()))) !=0 and len(str(var_venta.get())) !=0 and len(var_provee.get()) != 0 and len(str(var_stock.get())) != 0):
+        carga_tree()
+        save_data()
+    else:
+        messagebox.showwarning('Advertencia', 'Por favor, completa todos los campos')
+
 
 root = Tk()
 root.title("Maxikiosco")
 root.resizable(0, 0)
+
 
 # variable para guardar id provisorio sera eliminado cuando ingresemos los datos a una bd
 id_prod = 0
 # variables donde almaceno temporalmente los valores ingresados
 var_prod = StringVar()
 var_desc = StringVar()
-var_costo = IntVar()
-var_venta = IntVar()
+var_costo = DoubleVar()
+var_venta = DoubleVar()
 var_provee = StringVar()
 var_stock = IntVar()
 
@@ -48,8 +94,7 @@ def hide_lbl(label):
     label.destroy()
 
 
-# btn_1 agrega al tree view el prod nuevo, cuando este la bd se agregara a la misma verificando previamente que exista o no
-def click_btn_1():
+def carga_tree():
     global id_prod
     id_prod += 1
     tree.insert(
@@ -69,6 +114,11 @@ def click_btn_1():
     txt_lbl = Label(root, text=f"{entry_1.get()} se guardo correctamente")
     txt_lbl.grid(row=0, column=1)
     root.after(3000, lambda: hide_lbl(txt_lbl))
+
+
+# btn_1 agrega al tree view el prod nuevo, cuando este la bd se agregara a la misma verificando previamente que exista o no
+def click_btn_1():
+    validate_entry()
     clean_all()
 
 
@@ -136,7 +186,7 @@ tree = ttk.Treeview(root)
 tree["columns"] = ("col1", "col2", "col3", "col4", "col5", "col6", "col7")
 tree.column("#0", width=50, minwidth=50, anchor=W)
 tree.column("col1", width=80, minwidth=80, anchor=W)
-tree.column("col2", width=80, minwidth=80, anchor=W)
+tree.column("col2", width=150, minwidth=80, anchor=W)
 tree.column("col3", width=80, minwidth=80, anchor=W)
 tree.column("col4", width=80, minwidth=80, anchor=W)
 tree.column("col5", width=80, minwidth=80, anchor=W)
