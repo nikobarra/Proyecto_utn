@@ -132,27 +132,40 @@ def carga_tree():
                     product[6]),
         )
 
-
+# boton guardar
 def click_btn_1():
+    btn_1.config(text="Agregar")
     validate_entry()
     clean_all()
+    carga_tree()
+    btn_2.config(state="active")
+    btn_3.config(state="active")
 
 
+# boton modificar
 def click_btn_2():
+    btn_2.config(state="disabled")
+    btn_3.config(state="disabled")
+    btn_1.config(text="Guardar Cambios")
     clean_all()
     global btn2press
     global mi_id
     btn2press = True
     item = tree.focus()
     valor = tree.item(item)["values"]
-    entry_1.insert(0, valor[1])
-    entry_2.insert(0, valor[2])
-    entry_3.insert(0, valor[3])
-    entry_4.insert(0, valor[4])
-    entry_5.insert(0, valor[5])
-    entry_6.insert(0, valor[6])
-    mi_id = valor[0]
-    tree.grid_remove()
+    try:
+        entry_1.insert(0, valor[1])
+        entry_2.insert(0, valor[2])
+        entry_3.insert(0, valor[3])
+        entry_4.insert(0, valor[4])
+        entry_5.insert(0, valor[5])
+        entry_6.insert(0, valor[6])
+        mi_id = valor[0]
+        tree.grid_remove()
+    except:
+        messagebox.showwarning('Advertencia',
+                               'Seleccione un producto de la lista')
+        btn_2.config(state="active")
 
 
 # btn_3 elimina el prod seleccionado en el treeview de la bd
@@ -171,7 +184,10 @@ def click_btn_3():
         messagebox.showwarning('Advertencia', 'No hay productos seleccionados')
 
 
+# boton mostrar todos
 def click_btn_4():
+    btn_2.config(state="active")
+    btn_3.config(state="active")
     carga_tree()
 
 
@@ -213,9 +229,10 @@ btn_group.grid(row=6, column=1)
 btn_1 = Button(btn_group, text="Agregar", command=click_btn_1, cursor="hand2")
 btn_1.grid(row=3, column=1, padx=5, pady=5)
 btn_2 = Button(btn_group, text="Modificar",
-               command=click_btn_2, cursor="hand2")
+               command=click_btn_2, cursor="hand2", state="disabled")
 btn_2.grid(row=3, column=2, padx=5, pady=5)
-btn_3 = Button(btn_group, text="Eliminar", command=click_btn_3, cursor="hand2")
+btn_3 = Button(btn_group, text="Eliminar", command=click_btn_3, cursor="hand2",
+               state="disabled")
 btn_3.grid(row=3, column=3, padx=5, pady=5)
 btn_4 = Button(btn_group, text="Ver todos",
                command=click_btn_4,
