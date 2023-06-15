@@ -1,3 +1,4 @@
+import re
 import sqlite3
 from tkinter import (
     W,
@@ -50,14 +51,16 @@ def save_data():
     else:
         sql = "INSERT INTO productos(product,description, cost, price, provider, stock) VALUES(?, ?, ?, ?, ?, ?)"
         cursor.execute(sql, data)
+
     conn.commit()
     correct_save()
     carga_tree()
 
 
-# Valida las entradas para evitar guardar campos vacios
+# Valida las entradas para evitar guardar campos vacios y el campo producto se valida con regex para asegurarse que ingrese caracteres alfabeticos
 def validate_entry():
-    if ((len(var_prod.get()) != 0) and ((len(var_desc.get())) != 0) and ((len(str(var_costo.get()))) != 0) and (len(str(var_venta.get())) != 0) and (len(var_provee.get()) != 0) and (len(str(var_stock.get())) != 0)):
+    regex_val = re.findall("[a-zA-Z]", var_prod.get())
+    if ((regex_val) and ((len(var_desc.get())) != 0) and ((len(str(var_costo.get()))) != 0) and (len(str(var_venta.get())) != 0) and (len(var_provee.get()) != 0) and (len(str(var_stock.get())) != 0)):
         save_data()
     else:
         messagebox.showwarning('Advertencia',
@@ -132,6 +135,7 @@ def carga_tree():
                     product[6]),
         )
 
+
 # boton guardar
 def click_btn_1():
     btn_1.config(text="Agregar")
@@ -162,9 +166,10 @@ def click_btn_2():
         entry_6.insert(0, valor[6])
         mi_id = valor[0]
         tree.grid_remove()
-    except:
+    except IndexError:
         messagebox.showwarning('Advertencia',
                                'Seleccione un producto de la lista')
+        btn_3.config(state="active")
         btn_2.config(state="active")
 
 
